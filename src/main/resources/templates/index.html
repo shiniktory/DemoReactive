@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <script th:src="@{https://code.jquery.com/jquery-3.2.1.slim.min.js}" crossorigin="anonymous"></script>
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js}"
+            crossorigin="anonymous"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js}"
+            crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/jquery/1.12.0/jquery.min.js}"></script>
+
+    <script th:src="@{/js/scripts.js}"></script>
+
+</head>
+<body style="background: rgba(255,250,122,0.09)">
+<div class="container-fluid m-5 row" style="background: rgba(255,250,122,0.09)">
+
+    <div class="container-fluid row" >
+        <div class="card container-fluid col mx-1">
+            <h5 class="card-title m-2" style="font-size: 26px;">Create new post</h5>
+
+            <form id="new_message_form" method="post" enctype="application/x-www-form-urlencoded"
+                  th:action="@{/add_news}" th:object="${newsForm}" onsubmit="return postNews();">
+
+                <div class="col-auto my-1">
+                    <label class="mr-sm-1" for="newsTypeSelect">News Type:</label>
+                    <select class="custom-select mr-sm-1" id="newsTypeSelect" th:field="*{newsType}">
+                        <option selected th:value="${null}">Choose...</option>
+
+                        <option th:each="newsType : ${newsTypes}" th:value="${newsType}" th:text="${newsType}">Type
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="col-auto my-1">
+                    <label class="mr-sm-1" for="artistSelect">Artist:</label>
+                    <select class="custom-select mr-sm-1" id="artistSelect" th:field="*{artistId}"
+                            onchange="artistPreview()">
+                        <option selected th:value="${null}">Choose...</option>
+
+                        <option th:each="artist : ${artists}" th:value="${artist.id}" th:text="${artist.artistName}">
+                            Artist
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="col-auto my-1">
+                    <label for="message_input">News description:</label>
+                    <textarea class="form-control" id="message_input" rows="3" th:field="*{newsText}"></textarea>
+                </div>
+
+                <div class="col-auto my-1">
+                    <button type="submit" class="btn btn-primary my-2">PUBLISH</button>
+                </div>
+
+                <div id="selected_artist" class="figure col-auto my-1">
+                    <figure id="selected_artist_inner" class="figure" th:if="${selectedArtist != null}">
+                        <img th:src="${selectedArtist.imagePath}" class="figure-img img-fluid rounded"
+                             alt="Artist image">
+
+                        <figcaption class="figure-caption text-right" th:text="${selectedArtist.artistName}">A caption
+                            for
+                            the above image.
+                        </figcaption>
+                    </figure>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card container-fluid col mx-1">
+            <h5 class="card-title m-2" style="font-size: 26px;">Artists Top by news count</h5>
+
+            <table class="table table-striped">
+                <thead class="thead-dark" style="font-size: 20px;">
+                <tr>
+                    <th scope="col">Artist</th>
+                    <th scope="col">News count</th>
+                </tr>
+                </thead>
+                <tbody id="top_tbody" style="font-size: 20px;">
+                <tr th:each="topItem : ${topList}">
+                    <td scope="row" th:text="${topItem.artistName}"></td>
+                    <td scope="row" th:text="${topItem.newsCount}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid m-5" id="news_content">
+    <div id="news_content_inner">
+
+    </div>
+
+</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    window.onload = function () {
+        startNewsStream(/*[[@{|/news|}]]*/);
+    };
+
+    window.onbeforeunload = function () {
+        stopNewsStream();
+    };
+
+    /*]]>*/
+
+</script>
+</html>
