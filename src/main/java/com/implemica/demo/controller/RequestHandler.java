@@ -31,7 +31,7 @@ public class RequestHandler {
    private DataService dataService;
 
    @Bean
-   public RouterFunction<?> routes() {
+   public RouterFunction<ServerResponse> routes() {
 
       return route(GET("/").and(accept(MediaType.ALL)), this::handleStartPageRequest)
 

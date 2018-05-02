@@ -27,7 +27,7 @@
 
                 <div class="col-auto my-1">
                     <label class="mr-sm-1" for="newsTypeSelect">News Type:</label>
-                    <select class="custom-select mr-sm-1" id="newsTypeSelect" th:field="*{newsType}">
+                    <select class="custom-select mr-sm-1" id="newsTypeSelect" th:field="*{newsType}" required>
                         <option selected th:value="${null}">Choose...</option>
 
                         <option th:each="newsType : ${newsTypes}" th:value="${newsType}" th:text="${newsType}">Type
@@ -39,7 +39,7 @@
                 <div class="col-auto my-1">
                     <label class="mr-sm-1" for="artistSelect">Artist:</label>
                     <select class="custom-select mr-sm-1" id="artistSelect" th:field="*{artistId}"
-                            onchange="artistPreview()">
+                            onchange="artistPreview()" required>
                         <option selected th:value="${null}">Choose...</option>
 
                         <option th:each="artist : ${artists}" th:value="${artist.id}" th:text="${artist.artistName}">
@@ -51,7 +51,7 @@
 
                 <div class="col-auto my-1">
                     <label for="message_input">News description:</label>
-                    <textarea class="form-control" id="message_input" rows="3" th:field="*{newsText}"></textarea>
+                    <textarea class="form-control" id="message_input" rows="3" th:field="*{newsText}" required></textarea>
                 </div>
 
                 <div class="col-auto my-1">

@@ -41,8 +41,12 @@ public class DataServiceImpl implements DataService {
    @Override
    public Flux<Artist> listArtists() {
 
-      return artistRepository.findAll()
+      Flux<Artist> allArtists = artistRepository.findAll()
               .log("All Artists");
+
+      allArtists.subscribe();
+
+      return allArtists;
    }
 
    @Override
@@ -52,8 +56,12 @@ public class DataServiceImpl implements DataService {
          return Mono.empty();
       }
 
-      return artistRepository.findById(artistId)
+      Mono<Artist> foundArtist = artistRepository.findById(artistId)
               .log("Selected artist");
+
+      foundArtist.subscribe();
+
+      return foundArtist;
    }
 
    @Override
@@ -70,8 +78,12 @@ public class DataServiceImpl implements DataService {
          return Mono.empty();
       }
 
-      return artistRepository.findById(newForm.getArtistId())
-              .log("Artist from form")
+      Mono<Artist> artistById = artistRepository.findById(newForm.getArtistId())
+              .log("Artist from form");
+
+      artistById.subscribe();
+
+      return artistById
               .flatMap(artist -> Mono.just(News.builder()
                       .artist(artist)
                       .text(newForm.getNewsText())
@@ -86,24 +98,37 @@ public class DataServiceImpl implements DataService {
    @Override
    public Flux<ArtistNewsStatistic> getTopArtistStatistics(Long topCount) {
 
-      return artistRepository.findAll()
+      Flux<ArtistNewsStatistic> topArtistsStat = artistRepository.findAll()
               .flatMap(this::mapToTopArtistItem)
               .filter(artistNewsStatistic -> artistNewsStatistic.getNewsCount() > 0)
+              .log("Artists filtered")
               .sort(Comparator.comparing(ArtistNewsStatistic::getNewsCount).reversed())
               .log("Artists sorted")
               .take(topCount);
+
+      topArtistsStat.subscribe();
+
+      return topArtistsStat;
    }
 
 
    private Publisher<ArtistNewsStatistic> mapToTopArtistItem(Artist artist) {
 
-      Mono<Long> count = newsRepository.countAllByArtist(artist);
-
-      return count.map(c -> ArtistNewsStatistic.builder()
-              .newsCount(c)
-              .artistName(artist.getArtistName())
-              .build())
+      Mono<ArtistNewsStatistic> artistNewsStat = newsRepository.countAllByArtist(artist)
+              .map(count -> mapToArtistItemImpl(artist, count))
               .log("Converted to Item");
+
+      artistNewsStat.subscribe();
+
+      return artistNewsStat;
+   }
+
+   private ArtistNewsStatistic mapToArtistItemImpl(Artist artist, Long count) {
+
+      return ArtistNewsStatistic.builder()
+              .newsCount(count)
+              .artistName(artist.getArtistName())
+              .build();
    }
 
 
