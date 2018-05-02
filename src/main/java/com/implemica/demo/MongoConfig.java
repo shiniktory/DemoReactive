@@ -6,12 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
-/**
- * Created by User on 28.04.2018.
- */
-@EnableMongoRepositories
+
+@EnableReactiveMongoRepositories
 @Configuration
 @EnableMongoAuditing
 public class MongoConfig extends AbstractReactiveMongoConfiguration {

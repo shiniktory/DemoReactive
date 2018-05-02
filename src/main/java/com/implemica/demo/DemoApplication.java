@@ -24,7 +24,7 @@ public class DemoApplication {
    @Bean
    CommandLineRunner initData() {
 
-      return (p) -> dataService.insertTestData();
+      return (args) -> dataService.insertTestData();
    }
 
 }
